@@ -199,7 +199,7 @@ const Diagram: React.FC<DiagramProps> = ({ forces, distances, pivotPoint, expand
 
         {/* Removed RotationIndicator for resultant direction at pivot point */}
 
-        <g className="fill-gray-900 text-xs font-mono font-bold">
+        <g className="fill-gray-900 text-base font-mono font-bold">
           {distances.d1 > 0 && <text x={(tPoints.A.x + tPoints.C.x) / 2} y={tPoints.A.y - 25}>d1 = {distances.d1}m</text>}
           <text x={tPoints.A.x - 60} y={(tPoints.A.y + tPoints.B.y) / 2} dominantBaseline="middle">d2 = {distances.d2}m</text>
           {distances.d3 > 0 && <text x={(tPoints.B.x + tPoints.D.x) / 2} y={tPoints.B.y + 35}>d3 = {distances.d3}m</text>}

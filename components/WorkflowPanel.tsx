@@ -10,66 +10,66 @@ import Stepper from './Stepper';
 // --- Child Components ---
 
 interface SliderInputProps {
-  label: string;
-  value: number;
-  min: number;
-  max: number;
-  step: number;
-  unit: string;
-  onChange: (value: number) => void;
+    label: string;
+    value: number;
+    min: number;
+    max: number;
+    step: number;
+    unit: string;
+    onChange: (value: number) => void;
 }
 
 const SliderInput: React.FC<SliderInputProps> = ({ label, value, min, max, step, unit, onChange }) => {
-  const id = React.useId();
+    const id = React.useId();
 
-  // Special handling for angle sliders (0-360°)
-  const isAngleSlider = unit === '°' && max === 360;
-  const ticks = isAngleSlider
-    ? [0, 60, 120, 180, 240, 300, 360] // Show meaningful angle increments
-    : Array.from({ length: Math.min(6, Math.floor((max - min) / step) + 1) }, (_, i) => min + (i * (max - min) / (Math.min(6, Math.floor((max - min) / step) + 1) - 1)));
+    // Special handling for angle sliders (0-360°)
+    const isAngleSlider = unit === '°' && max === 360;
+    const ticks = isAngleSlider
+        ? [0, 60, 120, 180, 240, 300, 360] // Show meaningful angle increments
+        : Array.from({ length: Math.min(6, Math.floor((max - min) / step) + 1) }, (_, i) => min + (i * (max - min) / (Math.min(6, Math.floor((max - min) / step) + 1) - 1)));
 
-  return (
-    <div className="space-y-3">
-      <div className="flex justify-between items-center">
-        <label htmlFor={id} className="text-sm font-semibold text-gray-700">{label}</label>
-        <div className="flex items-center gap-2">
-            <input
-                id={id}
-                type="number"
-                value={value}
-                min={min}
-                max={max}
-                step={step}
-                onChange={(e) => onChange(parseFloat(e.target.value) || 0)}
-                className="w-16 bg-white border border-gray-300 rounded-lg px-2 py-1 text-right text-gray-900 text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition-colors"
-            />
-            <span className="text-sm text-gray-600 font-medium min-w-[1rem]">{unit}</span>
+    return (
+        <div className="space-y-3">
+            <div className="flex justify-between items-center">
+                <label htmlFor={id} className="text-base font-semibold text-gray-700">{label}</label>
+                <div className="flex items-center gap-2">
+                    <input
+                        id={id}
+                        type="number"
+                        value={value}
+                        min={min}
+                        max={max}
+                        step={step}
+                        onChange={(e) => onChange(parseFloat(e.target.value) || 0)}
+                        className="w-20 bg-white border border-gray-300 rounded-lg px-2 py-1 text-right text-gray-900 text-base font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition-colors"
+                    />
+                    <span className="text-base text-gray-600 font-medium min-w-[1rem]">{unit}</span>
+                </div>
+            </div>
+            <div className="relative">
+                <input
+                    type="range"
+                    aria-label={label}
+                    min={min}
+                    max={max}
+                    step={step}
+                    value={value}
+                    onChange={(e) => onChange(parseFloat(e.target.value))}
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                />
+                <div className="flex justify-between mt-2 px-1">
+                    {ticks.map((tick, i, arr) => (
+                        <span key={tick} className="text-sm text-gray-500" style={{
+                            marginLeft: i === 0 ? '0' : i === arr.length - 1 ? 'auto' : 'auto',
+                            marginRight: i === arr.length - 1 ? '0' : 'auto'
+                        }}>
+                            {tick.toFixed(step < 1 ? 1 : 0)}
+                        </span>
+                    ))}
+                </div>
+            </div>
         </div>
-      </div>
-      <div className="relative">
-        <input
-          type="range"
-          aria-label={label}
-          min={min}
-          max={max}
-          step={step}
-          value={value}
-          onChange={(e) => onChange(parseFloat(e.target.value))}
-          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-        />
-        <div className="flex justify-between mt-2 px-1">
-          {ticks.map((tick, i, arr) => (
-            <span key={tick} className="text-xs text-gray-500" style={{
-              marginLeft: i === 0 ? '0' : i === arr.length - 1 ? 'auto' : 'auto',
-              marginRight: i === arr.length - 1 ? '0' : 'auto'
-            }}>
-              {tick.toFixed(step < 1 ? 1 : 0)}
-            </span>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 interface ForceControlCardProps {
@@ -97,22 +97,22 @@ const ForceControlCard: React.FC<ForceControlCardProps> = ({ force, onChange }) 
         const angleRad = (acuteAngle * Math.PI) / 180;
         const fxMag = magnitude * Math.cos(angleRad);
         const fyMag = magnitude * Math.sin(angleRad);
-        
+
         const fx = xDirection === 'right' ? fxMag : -fxMag;
         const fy = yDirection === 'up' ? fyMag : -fyMag;
-        
+
         // Calculate full angle from components
         const fullAngle = Math.atan2(fy, fx) * 180 / Math.PI;
         const normalizedAngle = fullAngle < 0 ? fullAngle + 360 : fullAngle;
-        
-        onChange(force.id, { 
-            magnitude, 
-            acuteAngle, 
-            xDirection, 
-            yDirection, 
-            fx, 
-            fy, 
-            angle: normalizedAngle 
+
+        onChange(force.id, {
+            magnitude,
+            acuteAngle,
+            xDirection,
+            yDirection,
+            fx,
+            fy,
+            angle: normalizedAngle
         });
     };
 
@@ -123,46 +123,44 @@ const ForceControlCard: React.FC<ForceControlCardProps> = ({ force, onChange }) 
     };
 
     const setInputMethod = (method: 'full-angle' | 'acute' | 'components') => {
-        onChange(force.id, { 
+        onChange(force.id, {
             useComponents: method === 'components',
             useAcuteAngle: method === 'acute'
         });
     };
 
     return (
-        <div className={`p-3 rounded-lg border-2 space-y-2 transition-all duration-300 ${
-            force.isEnabled ? 'bg-gray-100 border-gray-400 shadow-md' : 'bg-gray-50 border-gray-300'
-        }`}>
+        <div className={`p-3 rounded-lg border-2 space-y-2 transition-all duration-300 ${force.isEnabled ? 'bg-gray-100 border-gray-400 shadow-md' : 'bg-gray-50 border-gray-300'
+            }`}>
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                    <h3 className="text-2xl font-bold text-gray-900 font-mono">{force.name}</h3>
-                    <span className={`text-lg px-3 py-1 rounded-full font-bold font-mono ${
-                        force.isEnabled ? 'bg-gray-800 text-white' : 'bg-gray-300 text-gray-600'
-                    }`}>
+                    <h3 className="text-3xl font-bold text-gray-900 font-mono">{force.name}</h3>
+                    <span className={`text-xl px-3 py-1 rounded-full font-bold font-mono ${force.isEnabled ? 'bg-gray-800 text-white' : 'bg-gray-300 text-gray-600'
+                        }`}>
                         {force.isEnabled ? 'ACTIVE' : 'INACTIVE'}
                     </span>
                 </div>
                 <label className="flex items-center cursor-pointer group">
-                    <span className="mr-2 text-lg font-bold text-gray-900 group-hover:text-gray-700 transition-colors font-mono">Include Force</span>
+                    <span className="mr-2 text-xl font-bold text-gray-900 group-hover:text-gray-700 transition-colors font-mono">Include Force</span>
                     <div className="relative">
                         <input type="checkbox" checked={force.isEnabled} onChange={(e) => onChange(force.id, { isEnabled: e.target.checked })} className="sr-only peer" />
-                        <div className="w-10 h-5 bg-gray-400 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-gray-600 peer-focus:ring-offset-1 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-gray-800 shadow-sm"></div>
+                        <div className="w-12 h-6 bg-gray-400 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-gray-600 peer-focus:ring-offset-1 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gray-800 shadow-sm"></div>
                     </div>
                 </label>
             </div>
             {force.isEnabled && (
                 <div className="space-y-3 pt-2 border-t-2 border-gray-300">
                     <div className="bg-white p-2 rounded-lg border border-gray-300">
-                        <h4 className="text-lg font-bold text-gray-900 mb-2 font-mono">Adjust Force Parameters:</h4>
+                        <h4 className="text-xl font-bold text-gray-900 mb-2 font-mono">Adjust Force Parameters:</h4>
                         <div className="space-y-4">
-                            <SliderInput 
-                                label="Magnitude" 
-                                value={force.magnitude} 
-                                min={0} 
-                                max={200} 
-                                step={1} 
-                                unit="N" 
-                                onChange={(v) => updateFromMagnitudeAngle(v, force.angle)} 
+                            <SliderInput
+                                label="Magnitude"
+                                value={force.magnitude}
+                                min={0}
+                                max={200}
+                                step={1}
+                                unit="N"
+                                onChange={(v) => updateFromMagnitudeAngle(v, force.angle)}
                             />
                             <SliderInput
                                 label="Angle (0-360°)"
@@ -174,11 +172,10 @@ const ForceControlCard: React.FC<ForceControlCardProps> = ({ force, onChange }) 
                                 onChange={(v) => updateFromMagnitudeAngle(force.magnitude, v)}
                             />
 
-                            {/* Acute Angle Display */}
-                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm">
+                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-base">
                                 <div className="flex items-center justify-between mb-2">
                                     <span className="font-semibold text-gray-700">Acute Angle Equivalent:</span>
-                                    <span className="font-bold text-blue-700">{(() => {
+                                    <span className="text-xl font-bold text-blue-700">{(() => {
                                         const angle = force.angle;
                                         if (angle >= 0 && angle <= 90) return `${angle.toFixed(0)}° (as is)`;
                                         if (angle > 90 && angle <= 180) return `${(180 - angle).toFixed(0)}° (180° - angle)`;
@@ -186,25 +183,25 @@ const ForceControlCard: React.FC<ForceControlCardProps> = ({ force, onChange }) 
                                         return `${(360 - angle).toFixed(0)}° (360° - angle)`;
                                     })()}</span>
                                 </div>
-                                <div className="text-xs text-gray-600">
+                                <div className="text-base text-gray-600">
                                     This shows how the current angle relates to acute angle calculations for easier reference.
                                 </div>
                             </div>
 
-                            <div className="text-xs text-gray-700 mt-2 flex items-center gap-4">
+                            <div className="text-base text-gray-700 mt-2 flex items-center gap-4">
                                 {/* Axis diagram with force components */}
-                                <svg width="48" height="48" viewBox="0 0 48 48">
+                                <svg width="60" height="60" viewBox="0 0 48 48">
                                     <line x1="24" y1="44" x2="24" y2="8" stroke="#374151" strokeWidth="2" markerEnd="url(#arrow)" />
                                     <line x1="24" y1="44" x2="44" y2="44" stroke="#374151" strokeWidth="2" markerEnd="url(#arrow)" />
-                                    <text x="28" y="12" fontSize="12" fill="#374151">y</text>
-                                    <text x="40" y="40" fontSize="12" fill="#374151">x</text>
+                                    <text x="28" y="12" fontSize="16" fill="#374151">y</text>
+                                    <text x="40" y="40" fontSize="16" fill="#374151">x</text>
                                     <defs>
                                         <marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto" markerUnits="strokeWidth">
                                             <path d="M0,0 L6,3 L0,6 L2,3 Z" fill="#374151" />
                                         </marker>
                                     </defs>
                                 </svg>
-                                <div className="font-mono text-xs">
+                                <div className="font-mono text-base">
                                     <div><strong>Fx:</strong> {force.magnitude.toFixed(1)} × cos({force.angle.toFixed(0)}°) = <strong>{force.fx.toFixed(1)}</strong></div>
                                     <div><strong>Fy:</strong> {force.magnitude.toFixed(1)} × sin({force.angle.toFixed(0)}°) = <strong>{force.fy.toFixed(1)}</strong></div>
                                 </div>
@@ -243,7 +240,7 @@ const AccordionItem: React.FC<{
             >
                 <div className="truncate pr-2">{title}</div>
                 <svg className={`w-4 h-4 transform transition-transform shrink-0 ${isOpen ? 'rotate-180' : ''}`} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5 5 1 1 5"/>
+                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5 5 1 1 5" />
                 </svg>
             </button>
         </h2>
@@ -251,7 +248,7 @@ const AccordionItem: React.FC<{
             <div className="p-4 border-t border-gray-200 bg-gray-50">
                 {isLoading && <LoadingSpinner />}
                 {!isLoading && content && (
-                     <div
+                    <div
                         className="prose prose-gray prose-sm max-w-none prose-h3:text-gray-800 prose-strong:text-gray-900 font-mono"
                         dangerouslySetInnerHTML={{ __html: marked.parse(content) as string }}
                     />
@@ -277,7 +274,7 @@ const CalculationBreakdown: React.FC<{
     }
 
     const enabledForces = Object.values(forces).filter(f => f.isEnabled);
-    
+
     if (enabledForces.length === 0) {
         return (
             <div className="p-6 text-center text-gray-600 font-medium text-xl font-mono">
@@ -317,7 +314,7 @@ const CalculationBreakdown: React.FC<{
                             if (normalized > 180 && normalized <= 270) return normalized - 180;
                             return 360 - normalized; // 270-360
                         };
-                        
+
                         const acuteAngle = getAcuteAngle(force.angle);
 
                         // Use absolute distances as shown in lecturer's example
@@ -335,7 +332,7 @@ const CalculationBreakdown: React.FC<{
                         } else {
                             linePrefix = totalMomentContribution >= 0 ? '+ ' : '- ';
                         }
-                        
+
                         const sinTermSign = momentFromSin >= 0 ? '+' : '-';
                         const cosTermSign = momentFromCos >= 0 ? '-' : '+';  // This term is subtracted in cross product
 
@@ -363,8 +360,8 @@ const CalculationBreakdown: React.FC<{
                     {Math.abs(totalMoment) < 0.01
                         ? 'System is in equilibrium'
                         : totalMoment > 0
-                        ? 'Counter-clockwise rotation'
-                        : 'Clockwise rotation'
+                            ? 'Counter-clockwise rotation'
+                            : 'Clockwise rotation'
                     }
                 </div>
             </div>
@@ -660,211 +657,209 @@ const WorkflowPanel: React.FC<WorkflowPanelProps> = ({
     currentStep,
     onStepChange
 }) => {
-  const [totalMoment, setTotalMoment] = useState<number>(0);
-  const [activeTab, setActiveTab] = useState<'breakdown' | 'concepts'>('breakdown');
-  const [explanations, setExplanations] = useState<Record<string, string>>({});
-  const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
+    const [totalMoment, setTotalMoment] = useState<number>(0);
+    const [activeTab, setActiveTab] = useState<'breakdown' | 'concepts'>('breakdown');
+    const [explanations, setExplanations] = useState<Record<string, string>>({});
+    const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
 
-  const { forces, pivotPoint, distances } = appState;
-  
-  useEffect(() => {
-    const moment = calculateTotalMoment(appState.forces, appState.distances, appState.pivotPoint);
-    setTotalMoment(moment);
-  }, [appState]);
+    const { forces, pivotPoint, distances } = appState;
 
-  useEffect(() => {
-    if (!expandedId || explanations[expandedId]) {
-      return;
-    }
-    
-    const isForce = !!forces[expandedId as PivotPointId];
+    useEffect(() => {
+        const moment = calculateTotalMoment(appState.forces, appState.distances, appState.pivotPoint);
+        setTotalMoment(moment);
+    }, [appState]);
 
-    const fetchExplanation = async () => {
-        setLoadingStates(s => ({...s, [expandedId]: true}));
-        try {
-            const explanation = isForce
-                ? await getForceExplanation(forces[expandedId as PivotPointId], pivotPoint, distances)
-                : await getConceptExplanation(expandedId as ConceptId);
-            setExplanations(e => ({...e, [expandedId]: explanation}));
-        } catch(e) {
-            console.error(e);
-            setExplanations(e => ({...e, [expandedId]: "Failed to load explanation."}));
-        } finally {
-            setLoadingStates(s => ({...s, [expandedId]: false}));
+    useEffect(() => {
+        if (!expandedId || explanations[expandedId]) {
+            return;
         }
-    }
-    fetchExplanation();
 
-  }, [expandedId, forces, pivotPoint, distances, explanations]);
+        const isForce = !!forces[expandedId as PivotPointId];
 
-  const handleToggle = (id: string) => {
-    onExpandedIdChange(expandedId === id ? null : id);
-  };
-  
-  const getRotationDirection = () => {
-    if (Math.abs(totalMoment) < 0.01) return { text: 'In Equilibrium', color: 'text-gray-600', icon: null };
-    return totalMoment > 0 
-        ? { text: 'Anti-Clockwise Rotation', color: 'text-gray-800', icon: 'ccw' as const } 
-        : { text: 'Clockwise Rotation', color: 'text-gray-900', icon: 'cw' as const };
-  };
+        const fetchExplanation = async () => {
+            setLoadingStates(s => ({ ...s, [expandedId]: true }));
+            try {
+                const explanation = isForce
+                    ? await getForceExplanation(forces[expandedId as PivotPointId], pivotPoint, distances)
+                    : await getConceptExplanation(expandedId as ConceptId);
+                setExplanations(e => ({ ...e, [expandedId]: explanation }));
+            } catch (e) {
+                console.error(e);
+                setExplanations(e => ({ ...e, [expandedId]: "Failed to load explanation." }));
+            } finally {
+                setLoadingStates(s => ({ ...s, [expandedId]: false }));
+            }
+        }
+        fetchExplanation();
 
-  const steps = ["Frame Setup", "Define Forces", "Analyze Results"];
+    }, [expandedId, forces, pivotPoint, distances, explanations]);
 
-  // Get current date and time for update info
-  const updatedAt = new Date().toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    const handleToggle = (id: string) => {
+        onExpandedIdChange(expandedId === id ? null : id);
+    };
 
-  return (
-    <div className="bg-white border border-gray-200 p-4 rounded-2xl shadow-sm h-full flex flex-col min-h-0">
-        <div className="pb-4 flex-shrink-0">
-            <Stepper steps={steps} currentStep={currentStep} />
-        </div>
+    const getRotationDirection = () => {
+        if (Math.abs(totalMoment) < 0.01) return { text: 'In Equilibrium', color: 'text-gray-600', icon: null };
+        return totalMoment > 0
+            ? { text: 'Anti-Clockwise Rotation', color: 'text-gray-800', icon: 'ccw' as const }
+            : { text: 'Clockwise Rotation', color: 'text-gray-900', icon: 'cw' as const };
+    };
 
-        <div className="flex-1 overflow-y-auto space-y-3 min-h-0 custom-scrollbar">
-        {/* --- STEP 1: FRAME SETUP --- */}
-        {currentStep === 1 && (
-            <section className="space-y-4 animate-fade-in">
-                <div className="bg-blue-50 p-5 rounded-xl border border-blue-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">1. Select Pivot Point</h3>
-                    <p className="text-sm text-gray-600 mb-4">Choose which point will be the center of rotation:</p>
-                    {!pivotPoint && (
-                        <div className="bg-blue-100 border border-blue-200 rounded-lg p-3 mb-4">
-                            <p className="text-sm text-blue-800 font-medium flex items-center gap-2">
-                                <span>ℹ️</span>
-                                Please select a pivot point to continue
-                            </p>
+    const steps = ["Frame Setup", "Define Forces", "Analyze Results"];
+
+    // Get current date and time for update info
+    const updatedAt = new Date().toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+    return (
+        <div className="bg-white border border-gray-200 p-4 rounded-2xl shadow-sm h-full flex flex-col min-h-0">
+            <div className="pb-4 flex-shrink-0">
+                <Stepper steps={steps} currentStep={currentStep} />
+            </div>
+
+            <div className="flex-1 overflow-y-auto space-y-3 min-h-0 custom-scrollbar">
+                {/* --- STEP 1: FRAME SETUP --- */}
+                {currentStep === 1 && (
+                    <section className="space-y-4 animate-fade-in">
+                        <div className="bg-blue-50 p-5 rounded-xl border border-blue-200">
+                            <h3 className="text-xl font-semibold text-gray-900 mb-3">1. Select Pivot Point</h3>
+                            <p className="text-base text-gray-600 mb-4">Choose which point will be the center of rotation:</p>
+                            {!pivotPoint && (
+                                <div className="bg-blue-100 border border-blue-200 rounded-lg p-3 mb-4">
+                                    <p className="text-base text-blue-800 font-medium flex items-center gap-2">
+                                        <span>ℹ️</span>
+                                        Please select a pivot point to continue
+                                    </p>
+                                </div>
+                            )}
+                            <div className="grid grid-cols-2 gap-3">
+                                {['A', 'B', 'C', 'D'].map((id) => (
+                                    <button
+                                        key={id}
+                                        onClick={() => onStateChange('pivotPoint', id as PivotPointId)}
+                                        className={`py-3 px-4 rounded-xl font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 text-base border ${pivotPoint === id
+                                            ? 'bg-blue-600 text-white border-blue-600 shadow-md'
+                                            : 'bg-white hover:bg-blue-50 text-gray-700 border-gray-300 hover:border-blue-300'
+                                            }`}
+                                    >
+                                        Point {id} {pivotPoint === id ? '✓' : ''}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
-                    )}
-                    <div className="grid grid-cols-2 gap-3">
-                        {['A', 'B', 'C', 'D'].map((id) => (
+                        <div className="bg-gray-50 p-5 rounded-xl border border-gray-200 space-y-4">
+                            <h3 className="text-xl font-semibold text-gray-900">2. Adjust Frame Distances</h3>
+                            <p className="text-base text-gray-600 mb-4">Set the distances between points on the structural frame:</p>
+                            <SliderInput label="Distance d₁ (A to C)" value={distances.d1} min={0} max={10} step={0.1} unit="m" onChange={(v) => onStateChange('distances', { ...distances, d1: v })} />
+                            <SliderInput label="Distance d₂ (A to B)" value={distances.d2} min={0} max={10} step={0.1} unit="m" onChange={(v) => onStateChange('distances', { ...distances, d2: v })} />
+                            <SliderInput label="Distance d₃ (B to D)" value={distances.d3} min={0} max={10} step={0.1} unit="m" onChange={(v) => onStateChange('distances', { ...distances, d3: v })} />
+                        </div>
+                        <div className="flex justify-between items-center pt-4 mt-4 border-t border-gray-200">
+                            {pivotPoint && (
+                                <button
+                                    onClick={() => onStateChange('pivotPoint', null)}
+                                    className="bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-3 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 flex items-center gap-2 text-sm"
+                                >
+                                    ↻ Reset Selection
+                                </button>
+                            )}
                             <button
-                            key={id}
-                            onClick={() => onStateChange('pivotPoint', id as PivotPointId)}
-                            className={`py-3 px-4 rounded-xl font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 text-sm border ${
-                                pivotPoint === id
-                                    ? 'bg-blue-600 text-white border-blue-600 shadow-md'
-                                    : 'bg-white hover:bg-blue-50 text-gray-700 border-gray-300 hover:border-blue-300'
-                            }`}
+                                onClick={() => onStepChange(2)}
+                                disabled={!pivotPoint}
+                                className={`font-semibold py-2 px-4 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 flex items-center gap-2 text-sm ${pivotPoint
+                                    ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm hover:shadow-md focus:ring-blue-500'
+                                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                    } ${!pivotPoint ? '' : 'ml-auto'}`}
                             >
-                            Point {id} {pivotPoint === id ? '✓' : ''}
+                                Next: Define Forces →
                             </button>
+                        </div>
+                    </section>
+                )}
+
+                {/* --- STEP 2: DEFINE FORCES --- */}
+                {currentStep === 2 && (
+                    <section className="space-y-6 animate-fade-in">
+                        <div className="bg-gray-50 p-6 rounded-lg border-2 border-gray-300">
+                            <h2 className="text-2xl font-bold text-gray-900 mb-2 font-mono">3. Select Forces to Include & Adjust Parameters</h2>
+                            <p className="text-lg text-gray-700 mb-2 font-mono">Choose which forces to apply and configure their magnitude and direction:</p>
+                        </div>
+                        {Object.values(forces).map((force: Force) => (
+                            <ForceControlCard key={force.id} force={force} onChange={onForceChange} />
                         ))}
-                    </div>
-                </div>
-                <div className="bg-gray-50 p-5 rounded-xl border border-gray-200 space-y-4">
-                    <h3 className="text-lg font-semibold text-gray-900">2. Adjust Frame Distances</h3>
-                    <p className="text-sm text-gray-600 mb-4">Set the distances between points on the structural frame:</p>
-                    <SliderInput label="Distance d₁ (A to C)" value={distances.d1} min={0} max={10} step={0.1} unit="m" onChange={(v) => onStateChange('distances', {...distances, d1: v})} />
-                    <SliderInput label="Distance d₂ (A to B)" value={distances.d2} min={0} max={10} step={0.1} unit="m" onChange={(v) => onStateChange('distances', {...distances, d2: v})} />
-                    <SliderInput label="Distance d₃ (B to D)" value={distances.d3} min={0} max={10} step={0.1} unit="m" onChange={(v) => onStateChange('distances', {...distances, d3: v})} />
-                </div>
-                <div className="flex justify-between items-center pt-4 mt-4 border-t border-gray-200">
-                    {pivotPoint && (
-                        <button
-                            onClick={() => onStateChange('pivotPoint', null)}
-                            className="bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-3 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 flex items-center gap-2 text-sm"
-                        >
-                            ↻ Reset Selection
-                        </button>
-                    )}
-                    <button
-                        onClick={() => onStepChange(2)}
-                        disabled={!pivotPoint}
-                        className={`font-semibold py-2 px-4 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 flex items-center gap-2 text-sm ${
-                            pivotPoint
-                                ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm hover:shadow-md focus:ring-blue-500'
-                                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        } ${!pivotPoint ? '' : 'ml-auto'}`}
-                    >
-                        Next: Define Forces →
-                    </button>
-                </div>
-            </section>
-        )}
-
-        {/* --- STEP 2: DEFINE FORCES --- */}
-        {currentStep === 2 && (
-            <section className="space-y-6 animate-fade-in">
-                 <div className="bg-gray-50 p-6 rounded-lg border-2 border-gray-300">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-2 font-mono">3. Select Forces to Include & Adjust Parameters</h2>
-                    <p className="text-lg text-gray-700 mb-2 font-mono">Choose which forces to apply and configure their magnitude and direction:</p>
-                 </div>
-                 {Object.values(forces).map((force: Force) => (
-                    <ForceControlCard key={force.id} force={force} onChange={onForceChange} />
-                ))}
-                <div className="flex justify-between pt-6">
-                     <button onClick={() => onStepChange(1)} className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-3 rounded-lg transition-colors flex items-center gap-2 text-xs border border-gray-700 shadow-md button-hover-lift font-mono">
-                        &larr; Back
-                    </button>
-                    <button onClick={() => onStepChange(3)} className="bg-gray-800 hover:bg-gray-900 text-white font-bold py-2 px-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-gray-600 flex items-center gap-2 text-xs border border-gray-800 button-hover-lift font-mono">
-                        Analyze Results &rarr;
-                    </button>
-                </div>
-            </section>
-        )}
-
-        {/* --- STEP 3: ANALYZE RESULTS --- */}
-        {currentStep === 3 && (
-            <section className="space-y-6 animate-fade-in">
-                <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-lg text-center border-2 border-purple-200 shadow-lg">
-                    <p className="text-xl text-purple-700 uppercase tracking-wider font-bold mb-2 font-mono">📊 LIVE CALCULATION UPDATE</p>
-                    <p className="text-lg text-gray-600 uppercase tracking-wider font-bold font-mono">Total Moment about Pivot {pivotPoint}</p>
-                    <p className="text-4xl font-bold text-gray-900 my-4 font-mono">{totalMoment.toFixed(2)} Nm</p>
-                    
-                    <div className="bg-white p-4 rounded-lg border border-purple-200 mt-4">
-                        <p className="text-xl font-bold text-gray-700 mb-2 font-mono">🔄 RESULTANT ROTATION DIRECTION:</p>
-                        <div className={`flex items-center justify-center gap-4 text-xl font-bold ${getRotationDirection().color} font-mono`}>
-                            <span className="bg-gray-100 px-4 py-2 rounded-full">{getRotationDirection().text}</span>
-                        </div>
-                    </div>
-                </div>
-      
-                <div className="bg-white rounded-lg border border-gray-300 overflow-hidden">
-                    <div className="border-b border-gray-300">
-                        <div className="flex -mb-px">
-                            <button onClick={() => { setActiveTab('breakdown'); onExpandedIdChange(null); }} className={`flex-1 py-3 font-bold text-lg transition-colors border-r border-gray-300 font-mono ${activeTab === 'breakdown' ? 'bg-gray-200 text-gray-900 border-b-2 border-gray-900' : 'text-gray-600 hover:bg-gray-100'}`}>
-                                Calculation Breakdown
+                        <div className="flex justify-between pt-6">
+                            <button onClick={() => onStepChange(1)} className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-3 rounded-lg transition-colors flex items-center gap-2 text-sm border border-gray-700 shadow-md button-hover-lift font-mono">
+                                &larr; Back
                             </button>
-                            <button onClick={() => { setActiveTab('concepts'); onExpandedIdChange(null); }} className={`flex-1 py-3 font-bold text-lg transition-colors font-mono ${activeTab === 'concepts' ? 'bg-gray-200 text-gray-900 border-b-2 border-gray-900' : 'text-gray-600 hover:bg-gray-100'}`}>
-                                Concept Explorer
+                            <button onClick={() => onStepChange(3)} className="bg-gray-800 hover:bg-gray-900 text-white font-bold py-2 px-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-gray-600 flex items-center gap-2 text-sm border border-gray-800 button-hover-lift font-mono">
+                                Analyze Results &rarr;
                             </button>
                         </div>
-                    </div>
+                    </section>
+                )}
 
-                    <div className="bg-white">
-                    {activeTab === 'breakdown' && (
-                        <CalculationBreakdown 
-                            forces={forces}
-                            distances={distances}
-                            pivotPoint={pivotPoint}
-                            totalMoment={totalMoment}
-                        />
-                    )}
-                    {activeTab === 'concepts' && (
-                        <div>
-                            {CONCEPTS.map(concept => (
-                                <AccordionItem 
-                                    key={concept.id}
-                                    title={concept.name}
-                                    content={explanations[concept.id] || ''}
-                                    isLoading={loadingStates[concept.id] || false}
-                                    isOpen={expandedId === concept.id}
-                                    onToggle={() => handleToggle(concept.id)}
-                                />
-                            ))}
+                {/* --- STEP 3: ANALYZE RESULTS --- */}
+                {currentStep === 3 && (
+                    <section className="space-y-6 animate-fade-in">
+                        <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-lg text-center border-2 border-purple-200 shadow-lg">
+                            <p className="text-xl text-purple-700 uppercase tracking-wider font-bold mb-2 font-mono">📊 LIVE CALCULATION UPDATE</p>
+                            <p className="text-lg text-gray-600 uppercase tracking-wider font-bold font-mono">Total Moment about Pivot {pivotPoint}</p>
+                            <p className="text-4xl font-bold text-gray-900 my-4 font-mono">{totalMoment.toFixed(2)} Nm</p>
+
+                            <div className="bg-white p-4 rounded-lg border border-purple-200 mt-4">
+                                <p className="text-xl font-bold text-gray-700 mb-2 font-mono">🔄 RESULTANT ROTATION DIRECTION:</p>
+                                <div className={`flex items-center justify-center gap-4 text-xl font-bold ${getRotationDirection().color} font-mono`}>
+                                    <span className="bg-gray-100 px-4 py-2 rounded-full">{getRotationDirection().text}</span>
+                                </div>
+                            </div>
                         </div>
-                    )}
-                    </div>
-                </div>
-                 <div className="flex justify-center pt-6">
-                    <button onClick={() => onStepChange(1)} className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-4 px-6 rounded-lg transition-colors flex items-center gap-2 text-xl border border-gray-700 shadow-md button-hover-lift font-mono">
-                        &larr; Start Over
-                    </button>
-                </div>
-            </section>
-        )}
+
+                        <div className="bg-white rounded-lg border border-gray-300 overflow-hidden">
+                            <div className="border-b border-gray-300">
+                                <div className="flex -mb-px">
+                                    <button onClick={() => { setActiveTab('breakdown'); onExpandedIdChange(null); }} className={`flex-1 py-3 font-bold text-lg transition-colors border-r border-gray-300 font-mono ${activeTab === 'breakdown' ? 'bg-gray-200 text-gray-900 border-b-2 border-gray-900' : 'text-gray-600 hover:bg-gray-100'}`}>
+                                        Calculation Breakdown
+                                    </button>
+                                    <button onClick={() => { setActiveTab('concepts'); onExpandedIdChange(null); }} className={`flex-1 py-3 font-bold text-lg transition-colors font-mono ${activeTab === 'concepts' ? 'bg-gray-200 text-gray-900 border-b-2 border-gray-900' : 'text-gray-600 hover:bg-gray-100'}`}>
+                                        Concept Explorer
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="bg-white">
+                                {activeTab === 'breakdown' && (
+                                    <CalculationBreakdown
+                                        forces={forces}
+                                        distances={distances}
+                                        pivotPoint={pivotPoint}
+                                        totalMoment={totalMoment}
+                                    />
+                                )}
+                                {activeTab === 'concepts' && (
+                                    <div>
+                                        {CONCEPTS.map(concept => (
+                                            <AccordionItem
+                                                key={concept.id}
+                                                title={concept.name}
+                                                content={explanations[concept.id] || ''}
+                                                isLoading={loadingStates[concept.id] || false}
+                                                isOpen={expandedId === concept.id}
+                                                onToggle={() => handleToggle(concept.id)}
+                                            />
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                        <div className="flex justify-center pt-6">
+                            <button onClick={() => onStepChange(1)} className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-4 px-6 rounded-lg transition-colors flex items-center gap-2 text-xl border border-gray-700 shadow-md button-hover-lift font-mono">
+                                &larr; Start Over
+                            </button>
+                        </div>
+                    </section>
+                )}
+            </div>
         </div>
-    </div>
-  );
+    );
 };
 
 export default WorkflowPanel;
